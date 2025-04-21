@@ -1,5 +1,6 @@
 # Ignore everything
 node_modules/
+dist/
 
 
 # But not these files
@@ -9,3 +10,4 @@ node_modules/
 
 # Also, don’t ignore folders (or Git won't find files inside them)
 !*/node_modules/
+!*/dist/
