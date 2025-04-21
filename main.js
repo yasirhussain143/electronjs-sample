@@ -7,6 +7,7 @@ const isMac = process.platform == 'darwin' ? true : false;
 console.log(process.platform)
 
 let win;
+let aboutwin;
 function createWindow() {
   win = new BrowserWindow({
     width: 800,
@@ -24,6 +25,25 @@ function createWindow() {
 
 }
 
+function createAboutWindow() {
+  aboutwin = new BrowserWindow({
+    title: 'About',
+    width: 300,
+    height: 200,
+    icon: __dirname + '/profile-pic.png',
+    resizable: isDev ? true : false,
+    backgroundColor: '#2f3186',
+    // parent: win,
+    // modal: true,
+  });
+
+  aboutwin.loadFile('about.html');
+   // Open DevTools
+  //  win.webContents.openDevTools();
+
+
+
+}
 app.on ('ready' , () => {
   createWindow()
 
@@ -38,19 +58,42 @@ app.on ('ready' , () => {
   })
 
 const menu = [
-  ...(isMac ? [{role: 'appMenu'}]  :[]),
+  ...(isMac ? [{
+
+        label: app.name,
+        submenu:[
+          {
+          label: 'about',
+          click: createAboutWindow,
+          }
+        ]
+  }]  :[]),
     {
-      label: 'File',
+    role: 'fileMenu',
+    } ,
+    ...(!isMac ? [{
+
+      label: help,
       submenu:[
         {
-          label: 'Quit',
-          accelerator:  isMac ? 'CmdOrCtrl+Q' : 'Ctrl+Q',
-          click: () => {
-            app.quit();
-          }
+        label: 'about',
+        click: createAboutWindow,
         }
       ]
-    }
+}]  :[]),
+    ...(isDev ? [
+      { label: 'developer'
+        , submenu: [
+          {role: 'reload'},
+          {role: 'forcereload'},
+          {type: 'separator'},
+          {role: 'toggledevtools'},
+          {role: 'togglefullscreen'},
+         
+
+        ]
+      }
+] : [] ) 
 ]
 
 app.on('window-all-closed' ,() => {
@@ -62,5 +105,6 @@ app.on('window-all-closed' ,() => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+    createAboutWindow();
   }
 });
