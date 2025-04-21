@@ -1,0 +1,11 @@
+# Ignore everything
+node_modules/
+
+
+# But not these files
+!about.html
+!main.js
+!README.md
+
+# Also, don’t ignore folders (or Git won't find files inside them)
+!*/node_modules/
