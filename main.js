@@ -11,7 +11,7 @@ let aboutwin;
 function createWindow() {
   win = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 700,
     icon: __dirname + '/profile-pic.png',
     resizable: isDev ? true : false,
     backgroundColor: '#2f3156',
