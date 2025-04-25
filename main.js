@@ -1,4 +1,5 @@
-const { app, BrowserWindow ,Menu, globalShortcut} = require('electron');
+const { app, BrowserWindow ,Menu, globalShortcut, ipcMain } = require('electron');
+const path = require('path')
 
 process.env.NODE_ENV = 'development';
 
@@ -10,16 +11,23 @@ let win;
 let aboutwin;
 function createWindow() {
   win = new BrowserWindow({
-    width: 800,
+    width: isDev ? 900 : 800,
     height: 700,
-    icon: __dirname + '/profile-pic.png',
     resizable: isDev ? true : false,
     backgroundColor: '#2f3156',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      allowFileAccess: true,  
+       sandbox: false, 
+            
+    }
   });
 
-  win.loadFile('index.html');
-   // Open DevTools
-  //  win.webContents.openDevTools();
+  win.loadFile('template/index.html');
+  if (isDev) {
+    win.webContents.openDevTools()
+  }
 
 
 
@@ -29,17 +37,18 @@ function createAboutWindow() {
   aboutwin = new BrowserWindow({
     title: 'About',
     width: 300,
-    height: 200,
-    icon: __dirname + '/profile-pic.png',
+    height: 300,
+    icon:  `${__dirname}/template/assets/profile-pic.png`,
     resizable: isDev ? true : false,
     backgroundColor: '#2f3186',
     // parent: win,
     // modal: true,
   });
 
-  aboutwin.loadFile('about.html');
-   // Open DevTools
-  //  win.webContents.openDevTools();
+  aboutwin.loadFile('template/about.html');
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+  }
 
 
 
@@ -73,7 +82,7 @@ const menu = [
     } ,
     ...(!isMac ? [{
 
-      label: help,
+      label: Help,
       submenu:[
         {
         label: 'about',
@@ -95,6 +104,10 @@ const menu = [
       }
 ] : [] ) 
 ]
+
+ipcMain.on('image:minimize' , (e,options) => {
+console.log(options)
+})
 
 app.on('window-all-closed' ,() => {
   if (!isMac) {
